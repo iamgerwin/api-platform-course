@@ -30,8 +30,8 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $this->loadUsers($manager);
-        $this->loadComments($manager);
         $this->loadBlogPosts($manager);
+        $this->loadComments($manager);
     }
 
     public function loadBlogPosts(ObjectManager $manager)
@@ -61,6 +61,7 @@ class AppFixtures extends Fixture
             for ($j = 0; $j < rand(1,10); $j++) {
                 $comment = new Comment();
                 $comment->setAuthor($user);
+                $comment->setBlogPost($this->getReference("blog_post_$i"));
                 $comment->setContent($this->faker->realText());
                 $comment->setPublished($this->faker->dateTimeThisYear);
 
