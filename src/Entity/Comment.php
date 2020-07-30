@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
 
 /**
  * @ApiResource()
@@ -28,6 +29,12 @@ class Comment
      * @ORM\Column(type="datetime")
      */
     private $published;
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
+    * @ORM\JoinColumn(nullable=false)
+    */
+    private $author;
 
     public function getId(): ?int
     {
@@ -55,6 +62,24 @@ class Comment
     {
         $this->published = $published;
 
+        return $this;
+    }
+    
+    /**
+     * @return User
+     */
+    function getAuthor(): User
+    { 
+        return $this->author; 
+    } 
+
+    /**
+     * @param User $author
+     */
+    function setAuthor(User $author): self
+    {  
+        $this->author = $author;
+        
         return $this;
     }
 }
