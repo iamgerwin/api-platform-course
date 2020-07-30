@@ -15,77 +15,88 @@ class AppFixtures extends Fixture
      * @var UserPasswordEncoderInterface
      */
     private $passwordEncoder;
-    
+
+    /**
+     * @var Faker\Factory
+     */
+    private $faker;
+
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->passwordEncoder = $passwordEncoder;
+        $this->faker = \Faker\Factory::create();
     }
+
     public function load(ObjectManager $manager)
     {
         $this->loadUsers($manager);
         $this->loadComments($manager);
         $this->loadBlogPosts($manager);
     }
-    
+
     public function loadBlogPosts(ObjectManager $manager)
     {
         $user = $this->getReference('user_mariz');
-        
-        $blogPost = new BlogPost();
-        $blogPost->setTitle("A first post!");
-        $blogPost->setPublished(new \DateTime('2020-07-30 12:00:00'));
-        $blogPost->setContent("Content here!");
-        $blogPost->setAuthor($user);
-        $blogPost->setSlug("a-first-post");
-        $manager->persist($blogPost);
 
-        $blogPost = new BlogPost();
-        $blogPost->setTitle("Second post!");
-        $blogPost->setPublished(new \DateTime('2020-07-31 12:00:00'));
-        $blogPost->setContent("Second Content here!");
-        $blogPost->setAuthor($user);
-        $blogPost->setSlug("second-post");
-        $manager->persist($blogPost);
+        for ($i = 0; $i < 100; $i++) {
+            $blogPost = new BlogPost();
+            $blogPost->setTitle($this->faker->realText(30));
+            $blogPost->setPublished($this->faker->dateTimeThisYear);
+            $blogPost->setContent($this->faker->realText());
+            $blogPost->setAuthor($user);
+            $blogPost->setSlug($this->faker->slug);
+
+            $this->setReference("blog_post_$i", $blogPost);
+            $manager->persist($blogPost);
+        }
 
         $manager->flush();
     }
-    
+
     public function loadComments(ObjectManager $manager)
     {
         $user = $this->getReference('commenter_test');
         
-        $comment = new Comment();
-        $comment->setAuthor($user);
-        $comment->setContent("This is a comment.");
-        $comment->setPublished(new \DateTime('now'));
+        for ($i = 0; $i < 100; $i++) {
+            for ($j = 0; $j < rand(1,10); $j++) {
+                $comment = new Comment();
+                $comment->setAuthor($user);
+                $comment->setContent($this->faker->realText());
+                $comment->setPublished($this->faker->dateTimeThisYear);
+
+                $manager->persist($comment);
+            }
+        }
         
-        $manager->persist($comment);
         $manager->flush();
     }
-    
+
     public function loadUsers(ObjectManager $manager)
     {
         $user = new User();
         $user->setUsername("mariz");
         $user->setPassword($this->passwordEncoder->encodePassword(
-            $user, 'password'
+            $user,
+            'password'
         ));
         $user->setEmail("mariz@gmail.com");
         $user->setName("Mariz Parayno");
-        
+
         $this->addReference('user_mariz', $user);
         $manager->persist($user);
-        
+
         $commenter = new User();
         $commenter->setUsername("commenter");
         $commenter->setPassword($this->passwordEncoder->encodePassword(
-            $user, 'secret'));
+            $user,
+            'secret'
+        ));
         $commenter->setEmail("commenter@gmail.com");
         $commenter->setName("Commenter Test");
-        
+
         $this->addReference('commenter_test', $commenter);
         $manager->persist($commenter);
-        
+
         $manager->flush();
     }
 }
