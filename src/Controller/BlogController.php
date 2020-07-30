@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\BlogPost;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -12,6 +14,44 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class BlogController extends AbstractController
 {
+    /**
+     * @Route("/", name="blog_list", requirements={"page"="\d+"}, methods={"GET"})
+     */
+    public function list(Request $request)
+    {
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 10);
+
+        $repository = $this->getDoctrine()->getRepository(BlogPost::class);
+        $items = $repository->findAll();
+
+        return $this->json(
+            [
+                'page' => $page,
+                'limit' => $limit,
+                'data' => array_map(function (BlogPost $item) {
+                    return $this->generateUrl('blog_by_slug', ['slug' => $item->getSlug()]);
+                }, $items)
+            ]
+        );
+    }
+    /**
+     * @Route("/post/{id}", name="blog_by_id", requirements={"id"="\d+"}, methods={"GET"})
+     */
+    public function post($id)
+    {
+        return $this->json($this->getDoctrine()->getRepository(BlogPost::class)->find($id));
+    }
+    /**
+     * @Route("/post/{slug}", name="blog_by_slug", requirements={"id"="\a-Z+"}, methods={"GET"})
+     */
+    public function postBySlug($slug)
+    {
+        return $this->json(
+            $this->getDoctrine()->getRepository(BlogPost::class)->findOneBy(['slug' => $slug])
+        );
+    }
+
     /**
      * @Route("/add", name="blog_add", methods={"POST"})
      */
@@ -30,40 +70,14 @@ class BlogController extends AbstractController
     }
 
     /**
-     * @Route("/", name="blog_list", requirements={"page"="\d+"})
+     * @Route("/{id}", name="blog_delete", methods={"DELETE"})
      */
-    public function list(Request $request)
+    public function delete(BlogPost $post)
     {
-        $page = $request->get('page', 1);
-        $limit = $request->get('limit', 10);
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($post);
+        $em->flush();
 
-        $repository = $this->getDoctrine()->getRepository(BlogPost::class);
-        $items = $repository->findAll();
-
-        return $this->json(
-            [
-                'page' => $page,
-                'limit' => $limit,
-                'data' => array_map(function (BlogPost $item) {
-                    return $this->generateUrl('blog_by_slug', ['slug' => $item->getSlug]);
-                }, $items)
-            ]
-        );
-    }
-    /**
-     * @Route("/{id}", name="blog_by_id", requirements={"id"="\d+"})
-     */
-    public function post($id)
-    {
-        return $this->json($this->getDoctrine()->getRepository(BlogPost::class)->find($id));
-    }
-    /**
-     * @Route("/{slug}", name="blog_by_slug")
-     */
-    public function postBySlug($slug)
-    {
-        return $this->json(
-            $this->getDoctrine()->getRepository(BlogPost::class)->findOneBy(['slug' => $slug])
-        );
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }
