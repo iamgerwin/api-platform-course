@@ -13,7 +13,7 @@ use App\Repository\UserRepository;
 /**
  * @ApiResource(
  *      itemOperations={"delete", "get"},
- *      collectionOperations={"get"},
+ *      collectionOperations={"get", "post"},
  *      attributes={
  *          "normalization_context"={"groups"={"read"}}
  *      }
