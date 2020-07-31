@@ -56,9 +56,9 @@ class AppFixtures extends Fixture
     public function loadComments(ObjectManager $manager)
     {
         $user = $this->getReference('commenter_test');
-        
+
         for ($i = 0; $i < 100; $i++) {
-            for ($j = 0; $j < rand(1,10); $j++) {
+            for ($j = 0; $j < rand(1, 10); $j++) {
                 $comment = new Comment();
                 $comment->setAuthor($user);
                 $comment->setBlogPost($this->getReference("blog_post_$i"));
@@ -68,7 +68,7 @@ class AppFixtures extends Fixture
                 $manager->persist($comment);
             }
         }
-        
+
         $manager->flush();
     }
 

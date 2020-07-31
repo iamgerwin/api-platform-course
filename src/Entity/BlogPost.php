@@ -11,7 +11,10 @@ use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass=BlogPostRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *      itemOperations={"get"},
+ *      collectionOperations={"get"}    
+ * )
  */
 class BlogPost
 {
@@ -38,22 +41,22 @@ class BlogPost
     private $content;
 
     /**
-    * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
-    * @ORM\JoinColumn(nullable=false)
-    */
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
+     * @ORM\JoinColumn(nullable=false)
+     */
     private $author;
-    
+
     /**
-    * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="blogPost")
-    * @ORM\JoinColumn(nullable=false)
-    */
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="blogPost")
+     * @ORM\JoinColumn(nullable=false)
+     */
     private $comments;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $slug;
-    
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -111,30 +114,30 @@ class BlogPost
 
         return $this;
     }
-    
+
     /**
      * @return User
      */
     function getAuthor(): User
-    { 
-        return $this->author; 
-    } 
+    {
+        return $this->author;
+    }
 
     /**
      * @param User $author
      */
     function setAuthor(User $author): self
-    {  
+    {
         $this->author = $author;
-        
+
         return $this;
     }
-    
+
     /**
      * @return Collection
      */
     function getComments(): Collection
-    { 
-        return $this->comments; 
-    } 
+    {
+        return $this->comments;
+    }
 }

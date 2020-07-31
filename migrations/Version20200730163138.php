@@ -12,12 +12,12 @@ use Doctrine\Migrations\AbstractMigration;
  */
 final class Version20200730163138 extends AbstractMigration
 {
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return '';
     }
 
-    public function up(Schema $schema) : void
+    public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('DROP INDEX IDX_BA5AE01DF675F31B');
@@ -37,7 +37,7 @@ final class Version20200730163138 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_9474526CA77FBEAF ON comment (blog_post_id)');
     }
 
-    public function down(Schema $schema) : void
+    public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('DROP INDEX IDX_BA5AE01DF675F31B');

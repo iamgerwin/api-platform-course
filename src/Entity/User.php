@@ -3,11 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use App\Entity\BlogPost;
-use App\Entity\Comment;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -46,12 +43,12 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      */
     private $email;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\BlogPost", mappedBy="author")
      */
     private $posts;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="author")
      */
@@ -120,18 +117,18 @@ class User implements UserInterface
      * @return Collection
      */
     public function getComments(): Collection
-    { 
-        return $this->comments; 
+    {
+        return $this->comments;
     }
 
     /**
      * @return Collection
      */
-    public function getPosts(): Collection 
-    { 
-        return $this->posts; 
+    public function getPosts(): Collection
+    {
+        return $this->posts;
     }
-    
+
     /**
      * Returns the roles granted to the user.
      *
@@ -171,6 +168,5 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
-        
     }
 }

@@ -8,7 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *      itemOperations={"get"},
+ *      collectionOperations={"get"}
+ * )
  * @ORM\Entity(repositoryClass=CommentRepository::class)
  */
 class Comment
@@ -29,24 +32,23 @@ class Comment
      * @ORM\Column(type="datetime")
      */
     private $published;
-    
+
     /**
-    * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
-    * @ORM\JoinColumn(nullable=false)
-    */
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="comments")
+     * @ORM\JoinColumn(nullable=false)
+     */
     private $author;
-    
+
     /**
-    * @ORM\ManyToOne(targetEntity="App\Entity\BlogPost", inversedBy="comments")
-    * @ORM\JoinColumn(nullable=false)
-    */
+     * @ORM\ManyToOne(targetEntity="App\Entity\BlogPost", inversedBy="comments")
+     * @ORM\JoinColumn(nullable=false)
+     */
     private $blogPost;
-    
+
     public function __construct()
     {
-
     }
-    
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,40 +77,40 @@ class Comment
 
         return $this;
     }
-    
+
     /**
      * @return User
      */
     function getAuthor(): User
-    { 
-        return $this->author; 
-    } 
+    {
+        return $this->author;
+    }
 
     /**
      * @param User $author
      */
     function setAuthor(User $author): self
-    {  
+    {
         $this->author = $author;
-        
+
         return $this;
     }
-    
+
     /**
      * @return BlogPost
      */
     function getBlogPost(): BlogPost
-    { 
-        return $this->blogPost; 
-    } 
+    {
+        return $this->blogPost;
+    }
 
     /**
      * @param BlogPost $blogPost
      */
     function setBlogPost(BlogPost $blogPost): self
-    {  
+    {
         $this->blogPost = $blogPost;
-        
+
         return $this;
     }
 }
